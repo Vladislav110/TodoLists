@@ -148,21 +148,21 @@ export const setTasksAC = (todoListId: string, tasks: TaskType[]) => {
 
 export const getTasksTC = (todoListId: string) => (dispatch: Dispatch) => {
     todolistsAPI.getTasks(todoListId)
-        .then((res) => {
+        .then((res:any) => {
             dispatch(setTasksAC(todoListId, res.data.items))
         })
 }
 
 export const deleteTaskTC = (todoListId: string, taskId: string) => (dispatch: Dispatch) => {
     todolistsAPI.deleteTask(todoListId, taskId)
-        .then((res) => {
+        .then((res:any) => {
             dispatch(removeTaskAC(taskId, todoListId))
         })
 }
 
 export const addTaskTC = (todoListId: string, title: string) => (dispatch: Dispatch) => {
     todolistsAPI.createTask(todoListId, title)
-        .then((res) => {
+        .then((res:any) => {
             dispatch(addTaskAC(res.data.data.item))
         })
 }
@@ -182,7 +182,7 @@ export const updateTaskTC = (todoListId: string, taskId: string, status: TaskSta
         }
 
         todolistsAPI.updateTask(todoListId, taskId, model)
-            .then((res) => {
+            .then((res:any) => {
                 dispatch(changeTaskStatusAC(taskId, status, todoListId))
             })
     }
