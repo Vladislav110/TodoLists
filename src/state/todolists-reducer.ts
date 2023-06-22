@@ -101,7 +101,7 @@ export const setTodoListsAC = (todoLists: TodolistType[]): SetTodoListsActionTyp
 
 export const getTodoListsTC = ()=> (dispatch:Dispatch)=>{
     todolistsAPI.getTodolists()
-        .then((res:any)=>{
+        .then((res)=>{
             dispatch(setTodoListsAC(res.data))
         })
 }
