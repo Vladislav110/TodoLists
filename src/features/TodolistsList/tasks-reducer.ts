@@ -29,8 +29,13 @@ const slice = createSlice({
     },
     setTasks: (state, action: PayloadAction<{ tasks: Array<TaskType>, todolistId: string }>) => {
       state[action.payload.todolistId] = action.payload.tasks;
+    },
+    clearTasks: () => {
+      return {};
     }
   },
+
+
   extraReducers: builder => {
     builder
       .addCase(todolistsActions.addTodolist, (state, action) => {
@@ -41,14 +46,14 @@ const slice = createSlice({
       })
       .addCase(todolistsActions.setTodolists, (state, action) => {
         action.payload.todolists.forEach((tl) => {
-          state[tl.id] = []
+          state[tl.id] = [];
         });
       });
   }
 });
 
-export const tasksActions = slice.actions
-export const tasksReducer = slice.reducer
+export const tasksActions = slice.actions;
+export const tasksReducer = slice.reducer;
 
 export const fetchTasksTC =
   (todolistId: string): AppThunk =>
@@ -56,13 +61,13 @@ export const fetchTasksTC =
       dispatch(appActions.setAppStatus({ status: "loading" }));
       todolistsAPI.getTasks(todolistId).then((res) => {
         const tasks = res.data.items;
-        dispatch(tasksActions.setTasks({tasks, todolistId}));
+        dispatch(tasksActions.setTasks({ tasks, todolistId }));
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
       });
     };
 export const removeTaskTC = (taskId: string, todolistId: string): AppThunk => (dispatch) => {
   todolistsAPI.deleteTask(todolistId, taskId).then((res) => {
-    const action = tasksActions.removeTask({taskId, todolistId});
+    const action = tasksActions.removeTask({ taskId, todolistId });
     dispatch(action);
   });
 };
@@ -75,7 +80,7 @@ export const addTaskTC =
         .then((res) => {
           if (res.data.resultCode === 0) {
             const task = res.data.data.item;
-            const action = tasksActions.addTask({task});
+            const action = tasksActions.addTask({ task });
             dispatch(action);
             dispatch(appActions.setAppStatus({ status: "succeeded" }));
           } else {
@@ -110,7 +115,7 @@ export const updateTaskTC =
         .updateTask(todolistId, taskId, apiModel)
         .then((res) => {
           if (res.data.resultCode === 0) {
-            const action = tasksActions.updateTask({taskId, model:domainModel, todolistId});
+            const action = tasksActions.updateTask({ taskId, model: domainModel, todolistId });
             dispatch(action);
           } else {
             handleServerAppError(res.data, dispatch);

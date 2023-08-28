@@ -19,7 +19,7 @@ const slice = createSlice({
       }
     },
     setTodolists: (state, action: PayloadAction<{ todolists: TodolistType[] }>) => {
-     return action.payload.todolists.map(tl => ({ ...tl, filter: "all", entityStatus: "idle" }));
+      return action.payload.todolists.map(tl => ({ ...tl, filter: "all", entityStatus: "idle" }));
 
     },
     removeTodolist: (state, action: PayloadAction<{ id: string }>) => {
@@ -39,6 +39,9 @@ const slice = createSlice({
       if (todolist) {
         todolist.entityStatus = action.payload.entityStatus;
       }
+    },
+    clearTodolists: () => {
+      return [];
     }
   }
 });
@@ -76,7 +79,7 @@ export const addTodolistTC = (title: string): AppThunk => {
   return (dispatch) => {
     dispatch(appActions.setAppStatus({ status: "loading" }));
     todolistsAPI.createTodolist(title).then((res) => {
-      dispatch(todolistsActions.addTodolist({ todolist: res.data.data.item}));
+      dispatch(todolistsActions.addTodolist({ todolist: res.data.data.item }));
       dispatch(appActions.setAppStatus({ status: "succeeded" }));
     });
   };
