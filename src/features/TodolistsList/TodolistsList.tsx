@@ -9,13 +9,13 @@ import {
   removeTodolistTC,
   TodolistDomainType, todolistsActions
 } from "./todolists-reducer";
-import { removeTaskTC, TasksStateType, tasksThunks } from "./tasks-reducer";
+import { TasksStateType, tasksThunks } from "./tasks-reducer";
 import { TaskStatuses } from "api/todolists-api";
 import { Grid, Paper } from "@mui/material";
-import { AddItemForm } from "components/AddItemForm/AddItemForm";
+import { AddItemForm } from "common/components/AddItemForm/AddItemForm";
 import { Todolist } from "./Todolist/Todolist";
 import { Navigate } from "react-router-dom";
-import { useAppDispatch } from "hooks/useAppDispatch";
+import { useAppDispatch } from "common/hooks/useAppDispatch";
 
 type PropsType = {
   demo?: boolean
@@ -36,8 +36,8 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
     dispatch(thunk);
   }, []);
 
-  const removeTask = useCallback(function(id: string, todolistId: string) {
-    const thunk = removeTaskTC(id, todolistId);
+  const removeTask = useCallback(function(taskId: string, todolistId: string) {
+    const thunk = tasksThunks.removeTask({taskId, todolistId});
     dispatch(thunk);
   }, []);
 
