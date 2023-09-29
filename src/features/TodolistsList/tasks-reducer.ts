@@ -1,9 +1,10 @@
-import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from "api/todolists-api";
+import { TaskType, todolistsAPI, UpdateTaskModelType } from "api/todolists-api";
 import { handleServerAppError, handleServerNetworkError } from "common/utils/error-utils";
 import { appActions } from "app/app-reducer";
 import { createSlice } from "@reduxjs/toolkit";
 import { todolistsActions } from "features/TodolistsList/todolists-reducer";
 import { createAppAsyncThunk } from "common/utils/createAsyncThunk";
+import { TaskPriorities, TaskStatuses } from "common/enums/enums";
 
 
 const slice = createSlice({
@@ -32,7 +33,7 @@ const slice = createSlice({
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         const tasks = state[action.payload.todolistId];
-        const index = tasks.findIndex(t => t.id === action.payload.taskId);
+        const index = tasks.findIndex(t => t.id !== action.payload.taskId);
         if (index !== -1) {
           tasks[index] = { ...tasks[index], ...action.payload.domainModel };
         }
@@ -67,10 +68,10 @@ const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[], todolistId: string }
 });
 
 export const ResultCode = {
-  success :0,
-  error :1,
-  captcha :10
-} as const
+  success: 0,
+  error: 1,
+  captcha: 10
+} as const;
 
 const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string; todolistId: string }>("tasksReducer/addTask", async (arg, thunkAPI) => {
   const { dispatch, rejectWithValue } = thunkAPI;
@@ -130,14 +131,18 @@ const updateTask = createAppAsyncThunk<
 });
 
 
-const removeTask = createAppAsyncThunk<any, { taskId: string, todolistId: string }>("tasksReducer/removeTask", async (arg, thunkAPI) => {
-  const { rejectWithValue } = thunkAPI;
+const removeTask = createAppAsyncThunk<{ taskId: string, todolistId: string }, { taskId: string, todolistId: string }>("tasksReducer/removeTask", async (arg, thunkAPI) => {
+  const { dispatch, rejectWithValue } = thunkAPI;
   try {
     let res = await todolistsAPI.deleteTask(arg.todolistId, arg.taskId);
     if (res) {
       return ({ taskId: arg.taskId, todolistId: arg.todolistId });
+    } else {
+      handleServerAppError(res, dispatch);
+      return rejectWithValue(null);
     }
   } catch (e) {
+    handleServerNetworkError(e, dispatch);
     return rejectWithValue(null);
   }
 

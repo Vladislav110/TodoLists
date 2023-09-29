@@ -23,7 +23,7 @@ const slice = createSlice({
 
     },
     removeTodolist: (state, action: PayloadAction<{ id: string }>) => {
-      const index = state.findIndex(todo => todo.id !== action.payload.id);
+      const index = state.findIndex(todo => todo.id === action.payload.id);
       if (index !== -1) {
         state.splice(index, 1);
       }
@@ -40,7 +40,7 @@ const slice = createSlice({
         todolist.entityStatus = action.payload.entityStatus;
       }
     },
-    clearTodolists: () => {
+    clearTodolist: () => {
       return [];
     }
   }
